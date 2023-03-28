@@ -1,8 +1,11 @@
 const ramenMenu = document.querySelector("#ramen-menu");
+const form = document.getElementById("ramen-rating")
 
 document.addEventListener("DOMContentLoaded", () => {
     loadRamen();
 })
+
+
 function loadRamen(){
     fetch("http://localhost:3000/ramens")
     .then(response => response.json())
@@ -14,15 +17,28 @@ function initializeRamen(ramArray){
     });
 }
 
+
 function renderRamen(ramen){
     const img = document.createElement("img")
     // console.log(ramen)
     img.src = ramen.image; 
+    img.alt = ramen.name 
+    img.dataset.id = ramen.id
     ramenMenu.append(img);
 
-    img.addEventListener("click", () => {
-        showDetails(ramen);
+    img.addEventListener("click", function(e){
+        getRamen(e.target.dataset.id);
     });     
+}
+
+
+
+function getRamen(ramenId){
+    fetch(`http://localhost:3000/ramens/${ramenId}`)
+    .then(response => response.json())
+    .then(ramen => {
+        showDetails(ramen)
+    })
 }
 
 function showDetails(){
@@ -39,4 +55,20 @@ function showDetails(){
     restaurant.textContent = ramen.restaurant;
     const form = document.querySelector("#ramen-rating")
     form.dataset.id = ramen.id;
+}
+function updateForm(){
+
+    const form = document.getElementById("ramen-rating")
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+                // console.log(e);
+        const newRating = document.querySelector("#rating").value
+        const newComment = document.querySelector("#comment").value
+          
+        const updatedObj = {
+            id: parseInt(ramenForm.dataset.id),
+            rating: newRating,
+            comment: newComment
+        }
+    })
 }
